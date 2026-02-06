@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Type TTS By Emmanuel| Male, Female, Child, Robot</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --bg-input: #222;
+            --primary: #4CAF50;
+            --male: #2196F3;
+            --female: #E91E63;
+            --child: #FF9800;
+            --robot: #9C27B0;
+            --text-primary: #fff;
+            --text-secondary: #aaa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #333;
+        }
+        
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--male), var(--female), var(--child), var(--robot));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        
+        .input-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 20px;
+            background: var(--bg-input);
+            border: 1px solid #444;
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 16px;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.6;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+        }
+        
+        .char-count {
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .voice-type-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .voice-type-title {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        .voice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .voice-card {
+            background: #222;
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .voice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        
+        .voice-card.active {
+            border-color: currentColor;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        
+        .voice-card.male {
+            color: var(--male);
+            border-color: var(--male);
+            background: linear-gradient(145deg, rgba(33, 150, 243, 0.1), rgba(33, 150, 243, 0.05));
+        }
+        
+        .voice-card.female {
+            color: var(--female);
+            border-color: var(--female);
+            background: linear-gradient(145deg, rgba(233, 30, 99, 0.1), rgba(233, 30, 99, 0.05));
+        }
+        
+        .voice-card.child {
+            color: var(--child);
+            border-color: var(--child);
+            background: linear-gradient(145deg, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.05));
+        }
+        
+        .voice-card.robot {
+            color: var(--robot);
+            border-color: var(--robot);
+            background: linear-gradient(145deg, rgba(156, 39, 176, 0.1), rgba(156, 39, 176, 0.05));
+        }
+        
+        .voice-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .voice-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .voice-desc {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .controls-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .range-container {
+            position: relative;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #333 0%, #444 100%);
+            border-radius: 4px;
+            -webkit-appearance: none;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--bg-dark);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        
+        .range-value {
+            min-width: 60px;
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        .voice-info {
+            background: linear-gradient(145deg, rgba(76, 175, 80, 0.1), rgba(33, 150, 243, 0.1));
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .voice-info strong {
+            color: var(--text-primary);
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        button {
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-speak {
+            background: linear-gradient(135deg, var(--primary), #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-speak:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-pause {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        .btn-pause:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+        
+        .btn-stop {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+        
+        .btn-stop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
+        .status {
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            text-align: center;
+            margin: 25px 0;
+            font-weight: 500;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        
+        .status.speaking {
+            border-left-color: var(--primary);
+            background: linear-gradient(145deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+            color: #4CAF50;
+        }
+        
+        .status.paused {
+            border-left-color: #FF9800;
+            background: linear-gradient(145deg, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.05));
+            color: #FF9800;
+        }
+        
+        .instructions {
+            background: linear-gradient(145deg, rgba(33, 150, 243, 0.1), rgba(233, 30, 99, 0.1));
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 4px solid var(--male);
+            font-size: 14px;
+            color: #90CAF9;
+        }
+        
+        @media (max-width: 768px) {
+            .voice-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .voice-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .input-section,
+            .voice-type-section,
+            .controls-section {
+                padding: 20px;
+            }
+        }
+        
+        .punctuation-note {
+            background: rgba(255, 193, 7, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #FFC107;
+            border-left: 4px solid #FFC107;
+        }
+        
+        .punctuation-note code {
+            background: rgba(255, 193, 7, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #FFD54F;
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Voice Type TTS Converter By Emmanuel </h1>
+            <p class="subtitle">Male • Female • Child • Robot - AI Storytelling Voices</p>
+        </header>
+        
+        <div class="input-section">
+            <textarea id="textInput" placeholder="Enter your text here...
+
+Example for testing voice types:
+'The moon was a silver coin in the midnight sky. Shadows danced like silent ghosts in the ancient forest. A single light flickered in the distance, calling me home.' 
+
+Smart punctuation: Use {,} to speak 'comma', normal commas pause.">Welcome to the voice type text-to-speech converter.
+
+This tool provides four distinct voice types:
+
+1. MALE: Deep bass voice perfect for storytelling and narration
+2. FEMALE: Clear, warm voice similar to popular TTS voices
+3. CHILD: High-pitched, energetic young voice
+4. ROBOT: Mechanical, synthetic voice with digital effects
+
+Still Under Development 
+
+Try each voice type to hear the difference! The text remains exactly as you type it.</textarea>
+            <div class="char-count">
+                Characters: <span id="charCount">0</span> • Words: <span id="wordCount">0</span>
+            </div>
+            
+            <div class="punctuation-note">
+                <strong>Smart Punctuation:</strong> Normal commas/punctuation create pauses. 
+                Use <code>{,}</code> to speak "comma", <code>{.}</code> for "period", <code>{!}</code> for "exclamation point"
+            </div>
+        </div>
+        
+        <div class="voice-type-section">
+            <div class="voice-type-title">🎭 Select Voice Type</div>
+            
+            <div class="voice-grid">
+                <!-- Male Voice Card -->
+                <div class="voice-card male active" onclick="selectVoiceType('male')">
+                    <i class="fas fa-mars voice-icon"></i>
+                    <div class="voice-name">Male Voice</div>
+                    <div class="voice-desc">Deep bass, storytelling voice. Rich and authoritative.</div>
+                </div>
+                
+                <!-- Female Voice Card -->
+                <div class="voice-card female" onclick="selectVoiceType('female')">
+                    <i class="fas fa-venus voice-icon"></i>
+                    <div class="voice-name">Female Voice</div>
+                    <div class="voice-desc">Clear, warm, Sandra-like voice. Pleasant and professional.</div>
+                </div>
+                
+                <!-- Child Voice Card -->
+                <div class="voice-card child" onclick="selectVoiceType('child')">
+                    <i class="fas fa-child voice-icon"></i>
+                    <div class="voice-name">Child Voice</div>
+                    <div class="voice-desc">High-pitched, energetic. Perfect for children's stories.</div>
+                </div>
+                
+                <!-- Robot Voice Card -->
+                <div class="voice-card robot" onclick="selectVoiceType('robot')">
+                    <i class="fas fa-robot voice-icon"></i>
+                    <div class="voice-name">Robot Voice</div>
+                    <div class="voice-desc">Mechanical, digital. Perfect for sci-fi and tech content.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls-section">
+            <div class="control-group">
+                <label>
+                    <span>Speech Speed: <span id="speedValue" class="range-value">1.0x</span></span>
+                    <span>Slow ← Normal → Fast</span>
+                </label>
+                <div class="range-container">
+                    <input type="range" id="speedControl" min="0.5" max="2.5" step="0.1" value="1.0">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>
+                    <span>Voice Pitch: <span id="pitchValue" class="range-value">1.0</span></span>
+                    <span>Low ← Normal → High</span>
+                </label>
+                <div class="range-container">
+                    <input type="range" id="pitchControl" min="0.1" max="3" step="0.1" value="1.0">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>
+                    <span>Volume: <span id="volumeValue" class="range-value">100%</span></span>
+                    <span>Quiet ← Normal → Loud</span>
+                </label>
+                <div class="range-container">
+                    <input type="range" id="volumeControl" min="0" max="100" value="100">
+                </div>
+            </div>
+            
+            <div class="voice-info">
+                <div><strong>Selected Voice:</strong> <span id="currentVoiceName">Male (Bass Storytelling)</span></div>
+                <div><strong>Voice Settings:</strong> <span id="voiceSettings">Pitch: 0.8 • Speed: 0.9x • Bass Boosted</span></div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn-speak" onclick="speakText()">
+                <i class="fas fa-play"></i>
+                Speak
+            </button>
+            <button class="btn-pause" onclick="togglePause()" id="pauseBtn">
+                <i class="fas fa-pause"></i>
+                Pause
+            </button>
+            <button class="btn-stop" onclick="stopSpeech()">
+                <i class="fas fa-stop"></i>
+                Stop
+            </button>
+            <button class="btn-test" onclick="testVoice()">
+                <i class="fas fa-volume-up"></i>
+                Test
+            </button>
+        </div>
+        
+        <div class="status" id="status">
+            <i class="fas fa-check-circle"></i> Ready to speak. Select a voice type and click Speak.
+        </div>
+        
+        <div class="instructions">
+            <strong>How it works:</strong> This uses your browser's built-in Web Speech API. Each voice type is created by:
+            <br>• Selecting the best matching system voice
+            <br>• Adjusting pitch, speed, and speech patterns
+            <br>• No API keys needed • Works on all devices including Android
+        </div>
+    </div>
+
+    <script>
+        // ====================
+        // CORE VARIABLES
+        // ====================
+        let synth = window.speechSynthesis;
+        let voices = [];
+        let currentUtterance = null;
+        let selectedVoiceType = 'male';
+        
+        // ====================
+        // VOICE TYPE SETTINGS
+        // ====================
+        const voiceSettings = {
+            male: {
+                name: "Male (Bass Storytelling)",
+                icon: "fa-mars",
+                color: "#2196F3",
+                pitch: 0.8,
+                rate: 0.9,
+                volume: 1.0,
+                description: "Deep bass voice perfect for storytelling",
+                keywords: ['male', 'man', 'deep', 'low', 'david', 'daniel', 'alex', 'mark'],
+                preferredGender: 'male',
+                sample: "In the quiet of the night, when stars whisper secrets to the moon, stories come alive. This is the male storytelling voice with rich bass tones."
+            },
+            female: {
+                name: "Female (Sandra-like)",
+                icon: "fa-venus",
+                color: "#E91E63",
+                pitch: 1.2,
+                rate: 1.0,
+                volume: 1.0,
+                description: "Clear, warm female voice similar to popular TTS voices",
+                keywords: ['female', 'woman', 'samantha', 'zira', 'susan', 'karen', 'lisa', 'sandra'],
+                preferredGender: 'female',
+                sample: "Welcome to a world of clear, pleasant speech. This female voice is warm and professional, perfect for narration and everyday use."
+            },
+            child: {
+                name: "Child Voice",
+                icon: "fa-child",
+                color: "#FF9800",
+                pitch: 1.8,
+                rate: 1.3,
+                volume: 1.0,
+                description: "High-pitched, energetic child's voice",
+                keywords: ['child', 'kid', 'young', 'high', 'tiny'],
+                preferredGender: 'female',
+                sample: "Wow! This is so much fun! I'm a happy little voice that loves to tell stories and play games. Everything is exciting!"
+            },
+            robot: {
+                name: "Robot Voice",
+                icon: "fa-robot",
+                color: "#9C27B0",
+                pitch: 0.5,
+                rate: 0.8,
+                volume: 1.0,
+                description: "Mechanical, digital robot voice",
+                keywords: ['robot', 'digital', 'synthetic', 'mechanical', 'computer'],
+                preferredGender: null,
+                sample: "BEEP. BOOP. INITIATING SPEECH PROTOCOL. THIS IS A ROBOTIC VOICE SYNTHESIS. ALL SYSTEMS FUNCTIONAL. MESSAGE TRANSMISSION COMPLETE."
+            }
+        };
+        
+        // ====================
+        // INITIALIZATION
+        // ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initVoices();
+            setupEventListeners();
+            updateTextCounts();
+            
+            // Set default voice type
+            selectVoiceType('male');
+            
+            // Force voice loading on user interaction
+            document.addEventListener('click', function() {
+                if (voices.length === 0) {
+                    loadVoices();
+                }
+            });
+        });
+        
+        // ====================
+        // VOICE MANAGEMENT
+        // ====================
+        function initVoices() {
+            voices = synth.getVoices();
+            
+            if (voices.length === 0) {
+                synth.onvoiceschanged = loadVoices;
+                setTimeout(loadVoices, 500);
+            } else {
+                processVoices();
+            }
+        }
+        
+        function loadVoices() {
+            voices = synth.getVoices();
+            if (voices.length > 0) {
+                processVoices();
+                updateStatus(`${voices.length} voices loaded successfully`);
+            } else {
+                // Fallback if no voices found
+                setTimeout(loadVoices, 1000);
+            }
+        }
+        
+        function processVoices() {
+            // Remove duplicate voices
+            const uniqueVoices = [];
+            const seen = new Set();
+            
+            voices.forEach(voice => {
+                const key = `${voice.name}-${voice.lang}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    uniqueVoices.push(voice);
+                }
+            });
+            
+            voices = uniqueVoices;
+            console.log(`Processed ${voices.length} unique voices`);
+        }
+        
+        function findBestVoiceForType(voiceType) {
+            const settings = voiceSettings[voiceType];
+            if (!settings || voices.length === 0) return null;
+            
+            // Try to find voice matching keywords
+            for (const keyword of settings.keywords) {
+                const matchingVoice = voices.find(voice => 
+                    voice.name.toLowerCase().includes(keyword.toLowerCase())
+                );
+                if (matchingVoice) return matchingVoice;
+            }
+            
+            // Try to find voice by language and gender preference
+            const englishVoices = voices.filter(voice => 
+                voice.lang.startsWith('en')
+            );
+            
+            if (englishVoices.length > 0) {
+                // If gender preference exists, try to match it
+                if (settings.preferredGender) {
+                    const genderVoices = englishVoices.filter(voice => {
+                        const name = voice.name.toLowerCase();
+                        if (settings.preferredGender === 'male') {
+                            return name.includes('male') || name.includes('man') || 
+                                   name.includes('david') || name.includes('daniel') ||
+                                   name.includes('alex') || name.includes('mark');
+                        } else if (settings.preferredGender === 'female') {
+                            return name.includes('female') || name.includes('woman') || 
+                                   name.includes('samantha') || name.includes('zira') ||
+                                   name.includes('susan') || name.includes('karen');
+                        }
+                        return true;
+                    });
+                    
+                    if (genderVoices.length > 0) {
+                        return genderVoices[0];
+                    }
+                }
+                
+                return englishVoices[0];
+            }
+            
+            // Return first available voice
+            return voices[0];
+        }
+        
+        // ====================
+        // VOICE TYPE SELECTION
+        // ====================
+        function selectVoiceType(type) {
+            selectedVoiceType = type;
+            const settings = voiceSettings[type];
+            
+            // Update UI
+            document.querySelectorAll('.voice-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Update voice info
+            document.getElementById('currentVoiceName').textContent = settings.name;
+            document.getElementById('voiceSettings').textContent = 
+                `Pitch: ${settings.pitch} • Speed: ${settings.rate}x • ${settings.description}`;
+            
+            // Apply voice type settings to sliders
+            document.getElementById('pitchControl').value = settings.pitch;
+            document.getElementById('speedControl').value = settings.rate;
+            
+            // Update display values
+            document.getElementById('pitchValue').textContent = settings.pitch.toFixed(1);
+            document.getElementById('speedValue').textContent = settings.rate.toFixed(1) + 'x';
+            
+            updateStatus(`${settings.name} selected`);
+        }
+        
+        // ====================
+        // TEXT PROCESSING
+        // ====================
+        function preprocessText(text) {
+            // Handle smart punctuation
+            const punctuationMap = {
+                '{,}': ' comma ',
+                '{.}': ' period ',
+                '{!}': ' exclamation point ',
+                '{?}': ' question mark ',
+                '{:}': ' colon ',
+                '{;}': ' semicolon ',
+                '{-}': ' dash '
+            };
+            
+            let processed = text;
+            
+            Object.entries(punctuationMap).forEach(([marker, word]) => {
+                const regex = new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+                processed = processed.replace(regex, word);
+            });
+            
+            // Apply voice-specific modifications (only for robot voice)
+            if (selectedVoiceType === 'robot') {
+                processed = makeTextRobotic(processed);
+            }
+            
+            // Clean up spaces
+            processed = processed.replace(/\s+/g, ' ').trim();
+            
+            return processed;
+        }
+        
+        function makeTextRobotic(text) {
+            // Add robotic effects by inserting pauses and digital artifacts
+            let roboticText = text;
+            
+            // Add occasional beeps and boops for robot voice
+            if (Math.random() > 0.7) {
+                roboticText = "BEEP. " + roboticText;
+            }
+            
+            // Make sentences more staccato
+            roboticText = roboticText
+                .replace(/\. /g, '. BEEP. ')
+                .replace(/\! /g, '! BOOP. ')
+                .replace(/\? /g, '? PROCESSING. ');
+            
+            return roboticText;
+        }
+        
+        // ====================
+        // SPEECH CONTROL
+        // ====================
+        function speakText() {
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (!text) {
+                updateStatus('Please enter some text first', 'error');
+                return;
+            }
+            
+            // Stop any ongoing speech
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            
+            // Preprocess text
+            const processedText = preprocessText(text);
+            
+            // Create utterance
+            currentUtterance = new SpeechSynthesisUtterance(processedText);
+            
+            // Try to find best voice for selected type
+            const bestVoice = findBestVoiceForType(selectedVoiceType);
+            if (bestVoice) {
+                currentUtterance.voice = bestVoice;
+            }
+            
+            // Get settings
+            const settings = voiceSettings[selectedVoiceType];
+            const userSpeed = parseFloat(document.getElementById('speedControl').value);
+            const userPitch = parseFloat(document.getElementById('pitchControl').value);
+            
+            // Apply voice type settings combined with user adjustments
+            currentUtterance.rate = settings.rate * userSpeed;
+            currentUtterance.pitch = settings.pitch * userPitch;
+            currentUtterance.volume = parseInt(document.getElementById('volumeControl').value) / 100;
+            
+            // Special effects for robot voice
+            if (selectedVoiceType === 'robot') {
+                currentUtterance.rate = 0.8 * userSpeed; // Slower for robot
+                currentUtterance.pitch = 0.5 * userPitch; // Lower pitch
+                
+                // Add more robotic effect by adjusting voice
+                if (currentUtterance.voice) {
+                    currentUtterance.voice = currentUtterance.voice;
+                }
+            }
+            
+            // Event handlers
+            currentUtterance.onstart = () => {
+                updateStatus(`Speaking with ${settings.name}...`, 'speaking');
+                document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+            };
+            
+            currentUtterance.onend = () => {
+                updateStatus('Finished speaking');
+                document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+            };
+            
+            currentUtterance.onerror = (event) => {
+                updateStatus(`Error: ${event.error}`, 'error');
+                document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+            };
+            
+            // Special handling for child voice to make it more energetic
+            if (selectedVoiceType === 'child') {
+                currentUtterance.onboundary = (event) => {
+                    // Add slight variations to make it sound more child-like
+                };
+            }
+            
+            // Speak
+            synth.speak(currentUtterance);
+        }
+        
+        function togglePause() {
+            if (synth.speaking) {
+                if (synth.paused) {
+                    synth.resume();
+                    updateStatus('Resumed speaking', 'speaking');
+                    document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                } else {
+                    synth.pause();
+                    updateStatus('Paused', 'paused');
+                    document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-play"></i> Resume';
+                }
+            }
+        }
+        
+        function stopSpeech() {
+            synth.cancel();
+            updateStatus('Stopped');
+            document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+        }
+        
+        function testVoice() {
+            const settings = voiceSettings[selectedVoiceType];
+            const oldText = document.getElementById('textInput').value;
+            
+            document.getElementById('textInput').value = settings.sample;
+            updateTextCounts();
+            
+            setTimeout(() => {
+                speakText();
+                
+                // Restore original text after speech
+                setTimeout(() => {
+                    document.getElementById('textInput').value = oldText;
+                    updateTextCounts();
+                }, 5000);
+            }, 100);
+        }
+        
+        // ====================
+        // UTILITY FUNCTIONS
+        // ====================
+        function setupEventListeners() {
+            // Speed control
+            document.getElementById('speedControl').addEventListener('input', function() {
+                document.getElementById('speedValue').textContent = 
+                    parseFloat(this.value).toFixed(1) + 'x';
+            });
+            
+            // Pitch control
+            document.getElementById('pitchControl').addEventListener('input', function() {
+                document.getElementById('pitchValue').textContent = 
+                    parseFloat(this.value).toFixed(1);
+            });
+            
+            // Volume control
+            document.getElementById('volumeControl').addEventListener('input', function() {
+                document.getElementById('volumeValue').textContent = 
+                    this.value + '%';
+            });
+            
+            // Text area
+            const textInput = document.getElementById('textInput');
+            textInput.addEventListener('input', updateTextCounts);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    speakText();
+                }
+                if (e.key === 'Escape') {
+                    stopSpeech();
+                }
+                if (e.key === ' ' && e.ctrlKey) {
+                    e.preventDefault();
+                    togglePause();
+                }
+            });
+        }
+        
+        function updateTextCounts() {
+            const text = document.getElementById('textInput').value;
+            const charCount = text.length;
+            const wordCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('wordCount').textContent = wordCount;
+        }
+        
+        function updateStatus(message, type = '') {
+            const status = document.getElementById('status');
+            
+            let icon = 'fa-check-circle';
+            if (type === 'speaking') icon = 'fa-volume-up';
+            if (type === 'paused') icon = 'fa-pause-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            
+            status.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            status.className = 'status';
+            
+            if (type === 'speaking') status.classList.add('speaking');
+            if (type === 'paused') status.classList.add('paused');
+        }
+        
+        // ====================
+        // ANDROID OPTIMIZATION
+        // ====================
+        if (/Android/i.test(navigator.userAgent)) {
+            console.log("Android device detected - applying optimizations");
+            
+            // Force voice loading for Android
+            setTimeout(() => {
+                if (voices.length === 0) {
+                    const utterance = new SpeechSynthesisUtterance('');
+                    synth.speak(utterance);
+                    setTimeout(() => {
+                        synth.cancel();
+                        voices = synth.getVoices();
+                        if (voices.length > 0) {
+                            processVoices();
+                            updateStatus(`${voices.length} Android voices loaded`);
+                        }
+                    }, 300);
+                }
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
